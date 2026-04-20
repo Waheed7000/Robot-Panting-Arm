@@ -43,7 +43,11 @@ void ImuModule::calibrateGyro() {
   Serial.println("Keep the controller still. Calibrating gyro...");
 
   for (int i = 0; i < GYRO_CALIBRATION_SAMPLES; i++) {
-    RawImuData raw = readRawData();
+    RawImuData raw;
+    if (!readRawData(raw)) {
+      i--; // retry this sample
+      continue;
+    }
 
     sumGx += raw.gx;
     sumGy += raw.gy;
@@ -75,7 +79,10 @@ void ImuModule::setReferencePose() {
 void ImuModule::update() {
   float dt = computeDeltaTime();
 
-  RawImuData raw = readRawData();
+  RawImuData raw;
+  if (!readRawData(raw)) {
+    return; // skip this loop if read failed
+  }
 
   // Remove gyro bias before scaling
   raw.gx = static_cast<int16_t>(raw.gx - gyroBiasX);
@@ -114,20 +121,24 @@ Orientation ImuModule::getOrientation() const {
 // Private methods
 // =========================
 
-RawImuData ImuModule::readRawData() {
-  RawImuData raw{};
-
+bool ImuModule::readRawData(RawImuData& raw) {
   Wire.beginTransmission(MPU6050_ADDR);
   Wire.write(MPU6050_REG_ACCEL_XOUT_H);
-  Wire.endTransmission(false);
+  if (Wire.endTransmission(false) != 0) {
+    return false;
+  }
 
-  Wire.requestFrom(MPU6050_ADDR, static_cast<uint8_t>(14));
+  uint8_t bytesRead = Wire.requestFrom(MPU6050_ADDR, (uint8_t)14);
+
+  if (bytesRead != 14) {
+    return false;
+  }
 
   raw.ax = (Wire.read() << 8) | Wire.read();
   raw.ay = (Wire.read() << 8) | Wire.read();
   raw.az = (Wire.read() << 8) | Wire.read();
 
-  // Skip temperature
+  // skip temperature
   Wire.read();
   Wire.read();
 
@@ -135,7 +146,7 @@ RawImuData ImuModule::readRawData() {
   raw.gy = (Wire.read() << 8) | Wire.read();
   raw.gz = (Wire.read() << 8) | Wire.read();
 
-  return raw;
+  return true;
 }
 
 ScaledImuData ImuModule::scaleRawData(const RawImuData& raw) {

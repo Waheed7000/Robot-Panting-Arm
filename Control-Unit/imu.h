@@ -36,7 +36,7 @@ public:
   Orientation getOrientation() const;
 
 private:
-  RawImuData readRawData();
+  bool readRawData(RawImuData& raw);
   ScaledImuData scaleRawData(const RawImuData& raw);
   void applyAccelLowPassFilter(ScaledImuData& data);
   void computeAccelAngles(const ScaledImuData& data, float& rollAccDeg, float& pitchAccDeg);
