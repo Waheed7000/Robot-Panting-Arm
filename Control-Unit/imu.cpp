@@ -14,6 +14,22 @@ void ImuModule::begin() {
   Wire.write(0x00);
   Wire.endTransmission();
 
+  // =========================
+  // Configure accelerometer range (+/-2g)
+  // =========================
+  Wire.beginTransmission(MPU6050_ADDR);
+  Wire.write(MPU6050_REG_ACCEL_CONFIG);   // ACCEL_CONFIG register
+  Wire.write(0x00);   // +/-2g
+  Wire.endTransmission();
+
+  // =========================
+  // Configure gyroscope range (+/-250 deg/s)
+  // =========================
+  Wire.beginTransmission(MPU6050_ADDR);
+  Wire.write(MPU6050_REG_GYRO_CONFIG);   // GYRO_CONFIG register
+  Wire.write(0x00);   // +/-250 deg/s
+  Wire.endTransmission();
+
   delay(100);
 
   lastUpdateMicros = micros();
@@ -67,6 +83,7 @@ void ImuModule::update() {
   raw.gz = static_cast<int16_t>(raw.gz - gyroBiasZ);
 
   ScaledImuData data = scaleRawData(raw);
+  applyAccelLowPassFilter(data);
 
   float rollAccDeg = 0.0f;
   float pitchAccDeg = 0.0f;
@@ -133,6 +150,23 @@ ScaledImuData ImuModule::scaleRawData(const RawImuData& raw) {
   data.gz_dps = raw.gz / GYRO_SCALE_LSB_PER_DPS;
 
   return data;
+}
+
+void ImuModule::applyAccelLowPassFilter(ScaledImuData& data) {
+  if (!accelFilterInitialized) {
+    axFiltered_g = data.ax_g;
+    ayFiltered_g = data.ay_g;
+    azFiltered_g = data.az_g;
+    accelFilterInitialized = true;
+  } else {
+    axFiltered_g = ACCEL_LPF_ALPHA * data.ax_g + (1.0f - ACCEL_LPF_ALPHA) * axFiltered_g;
+    ayFiltered_g = ACCEL_LPF_ALPHA * data.ay_g + (1.0f - ACCEL_LPF_ALPHA) * ayFiltered_g;
+    azFiltered_g = ACCEL_LPF_ALPHA * data.az_g + (1.0f - ACCEL_LPF_ALPHA) * azFiltered_g;
+  }
+
+  data.ax_g = axFiltered_g;
+  data.ay_g = ayFiltered_g;
+  data.az_g = azFiltered_g;
 }
 
 void ImuModule::computeAccelAngles(const ScaledImuData& data, float& rollAccDeg, float& pitchAccDeg) {

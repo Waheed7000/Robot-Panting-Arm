@@ -18,6 +18,8 @@ constexpr uint8_t MPU6050_ADDR = 0x68;
 // MPU6050 register addresses
 constexpr uint8_t MPU6050_REG_PWR_MGMT_1 = 0x6B;
 constexpr uint8_t MPU6050_REG_ACCEL_XOUT_H = 0x3B;
+constexpr uint8_t MPU6050_REG_ACCEL_CONFIG = 0x1C;
+constexpr uint8_t MPU6050_REG_GYRO_CONFIG  = 0x1B;
 
 // =========================
 // Sensor scaling constants
@@ -33,6 +35,12 @@ constexpr float GYRO_SCALE_LSB_PER_DPS = 131.0f;
 // =========================
 constexpr int GYRO_CALIBRATION_SAMPLES = 1000;
 constexpr int GYRO_CALIBRATION_DELAY_MS = 2;
+
+
+// =========================
+// Accelerometer low-pass filter
+// =========================
+constexpr float ACCEL_LPF_ALPHA = 0.2f;
 
 // =========================
 // Complementary filter

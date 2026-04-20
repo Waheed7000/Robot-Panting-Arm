@@ -38,6 +38,7 @@ public:
 private:
   RawImuData readRawData();
   ScaledImuData scaleRawData(const RawImuData& raw);
+  void applyAccelLowPassFilter(ScaledImuData& data);
   void computeAccelAngles(const ScaledImuData& data, float& rollAccDeg, float& pitchAccDeg);
   float computeDeltaTime();
 
@@ -46,6 +47,13 @@ private:
   float gyroBiasX = 0.0f;
   float gyroBiasY = 0.0f;
   float gyroBiasZ = 0.0f;
+
+  // Filtered accelerometer values in g
+  float axFiltered_g = 0.0f;
+  float ayFiltered_g = 0.0f;
+  float azFiltered_g = 0.0f;
+
+  bool accelFilterInitialized = false;
 
   // Filtered absolute orientation
   float rollDeg = 0.0f;
