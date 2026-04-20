@@ -27,6 +27,11 @@ struct Orientation {
   float pitch;
 };
 
+struct MotionCommand {
+  float yawCmd;
+  float pitchCmd;
+};
+
 class ImuModule {
 public:
   void begin();
