@@ -63,4 +63,9 @@ constexpr float MAX_CONTROL_ANGLE_DEG = 25.0f;
 // =========================
 constexpr int LOOP_DELAY_MS = 10;
 
+// =========================
+// LED Calibration Indicator
+// =========================
+constexpr uint8_t CALIB_LED_PIN = 2;
+
 #endif

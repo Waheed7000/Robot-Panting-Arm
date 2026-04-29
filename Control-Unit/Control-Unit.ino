@@ -24,9 +24,15 @@ void setup() {
   Serial.begin(SERIAL_BAUD);
   delay(500);
 
+  // LED ON → calibration starting
+  pinMode(CALIB_LED_PIN, OUTPUT);
+  digitalWrite(CALIB_LED_PIN, HIGH);
+
   imu.begin();
   imu.calibrateGyro();
   imu.setReferencePose();
+
+  digitalWrite(CALIB_LED_PIN, LOW);
 
   Serial.println("IMU ready.");
 
