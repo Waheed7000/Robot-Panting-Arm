@@ -68,4 +68,9 @@ constexpr int LOOP_DELAY_MS = 10;
 // =========================
 constexpr uint8_t CALIB_LED_PIN = 2;
 
+// =========================
+// Push Button (Spray Valve)
+// =========================
+constexpr uint8_t SPRAY_BTN_PIN = 4;
+
 #endif

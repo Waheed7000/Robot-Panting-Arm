@@ -10,6 +10,7 @@ struct ControlPacketData {
   float pitch;
   float yawCmd;
   float pitchCmd;
+  bool sprayActive;
 };
 
 class CommLink {

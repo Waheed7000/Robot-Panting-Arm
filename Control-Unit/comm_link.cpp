@@ -54,7 +54,8 @@ bool CommLink::sendControlData(const ControlPacketData& data) {
   String plain = String(data.roll, 2) + "," +
                  String(data.pitch, 2) + "," +
                  String(data.yawCmd, 2) + "," +
-                 String(data.pitchCmd, 2);
+                 String(data.pitchCmd, 2) + "," +
+                 String(data.sprayActive ? 1 : 0);;
 
   String cipherHex;
   if (!encryptTextToHex(plain, keyClientToServer, ivClientToServer, cipherHex)) {

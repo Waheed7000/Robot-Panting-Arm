@@ -155,6 +155,7 @@ void printReceivedControlData(const String& text) {
   int c1 = text.indexOf(',');
   int c2 = text.indexOf(',', c1 + 1);
   int c3 = text.indexOf(',', c2 + 1);
+  int c4 = text.indexOf(',', c3 + 1);
 
   if (c1 < 0 || c2 < 0 || c3 < 0) {
     Serial.print("[SERVER] RX: ");
@@ -166,6 +167,7 @@ void printReceivedControlData(const String& text) {
   float pitch = text.substring(c1 + 1, c2).toFloat();
   float yawCmd = text.substring(c2 + 1, c3).toFloat();
   float pitchCmd = text.substring(c3 + 1).toFloat();
+  bool sprayActive = (c4 > 0) ? (text.substring(c4 + 1).toInt() == 1) : false;
 
   Serial.print("Roll: ");
   Serial.print(roll, 2);
@@ -174,7 +176,9 @@ void printReceivedControlData(const String& text) {
   Serial.print("  |  YawCmd: ");
   Serial.print(yawCmd, 2);
   Serial.print("  PitchCmd: ");
-  Serial.println(pitchCmd, 2);
+  Serial.print(pitchCmd, 2);
+  Serial.print("  |  Spray: ");
+  Serial.println(sprayActive ? "ON" : "OFF");
 }
 
 void handleLine(String line) {

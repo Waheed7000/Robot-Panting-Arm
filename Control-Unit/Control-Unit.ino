@@ -28,6 +28,8 @@ void setup() {
   pinMode(CALIB_LED_PIN, OUTPUT);
   digitalWrite(CALIB_LED_PIN, HIGH);
 
+  pinMode(SPRAY_BTN_PIN, INPUT_PULLUP);
+
   imu.begin();
   imu.calibrateGyro();
   imu.setReferencePose();
@@ -74,6 +76,7 @@ void loop() {
     packet.pitch = angles.pitch;
     packet.yawCmd = cmd.yawCmd;
     packet.pitchCmd = cmd.pitchCmd;
+    packet.sprayActive = (digitalRead(SPRAY_BTN_PIN) == LOW);
 
     comm.sendControlData(packet);
   }
