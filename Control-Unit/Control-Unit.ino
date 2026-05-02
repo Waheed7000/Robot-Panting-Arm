@@ -74,8 +74,8 @@ void loop() {
     ControlPacketData packet;
     packet.roll = angles.roll;
     packet.pitch = angles.pitch;
-    packet.yawCmd = cmd.yawCmd;
-    packet.pitchCmd = cmd.pitchCmd;
+    packet.yawCmd   = (abs(cmd.yawCmd)  >= 1.0f) ? (cmd.yawCmd  > 0 ? 1.0f : -1.0f) : 0.0f;
+    packet.pitchCmd = (abs(cmd.pitchCmd) >= 1.0f) ? (cmd.pitchCmd > 0 ? 1.0f : -1.0f) : 0.0f;
     packet.sprayActive = (digitalRead(SPRAY_BTN_PIN) == LOW);
 
     comm.sendControlData(packet);

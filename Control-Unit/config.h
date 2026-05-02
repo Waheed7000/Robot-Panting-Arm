@@ -56,7 +56,7 @@ constexpr float DEADZONE_PITCH_DEG = 2.0f;
 // =========================
 // Control mapping
 // =========================
-constexpr float MAX_CONTROL_ANGLE_DEG = 25.0f;
+constexpr float MAX_CONTROL_ANGLE_DEG = 30.0f;
 
 // =========================
 // Loop timing
